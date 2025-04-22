@@ -77,7 +77,7 @@ Este tutorial te guiará paso a paso para desplegar una página web utilizando u
 
    ```nginx
    server {
-        listen  
+        listen       80;
         listen       [::]:80;
         server_name  _;
         root         /var/www/pokedex-angular;
@@ -103,24 +103,4 @@ Este tutorial te guiará paso a paso para desplegar una página web utilizando u
    sudo systemctl reload nginx
    ```
 
----
-
-### 3. Visualizar la aplicación web
-
-1. Sube tus archivos HTML/CSS/JS al servidor. Por ejemplo, si tienes un archivo `index.html`, puedes subirlo al directorio raíz de NGINX:
-   ```bash
-   sudo rm /var/www/html/index.nginx-debian.html
-   sudo cp index.html /var/www/html/
-   ```
-
-2. Asegúrate de que los permisos del archivo sean correctos:
-   ```bash
-   sudo chmod 644 /var/www/html/index.html
-   ```
-
-3. Recarga NGINX (opcional, pero recomendable si realizas cambios):
-   ```bash
-   sudo systemctl reload nginx
-   ```
-
-4. Abre tu navegador y entra a la IP pública de tu instancia. Si todo está configurado correctamente, verás tu página web publicada.
+6. Abre tu navegador y entra a la IP pública de tu instancia. Si todo está configurado correctamente, verás tu página web publicada.
