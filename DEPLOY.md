@@ -73,7 +73,7 @@ Este tutorial te guiará paso a paso para desplegar una página web utilizando u
    sudo nano /etc/nginx/nginx.conf
    ```
 
-   Y veras la siguiente estructura:
+   Y copiaras y pegaras todo esto para que se vea de la siguiente estructura:
 
    ```nginx
    server {
