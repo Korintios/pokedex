@@ -67,7 +67,7 @@ Este tutorial te guiará paso a paso para desplegar una página web utilizando u
    sudo mv /home/<user>/tu-app /var/www/tu-app
    ```
 
-4. **Configura un nuevo sitio en NGINX:**
+4. **Configura un nuevo sitio en NGINX junto a sus encabezados:**
    Modifica el archivo de configuración en el atributo **server**:
    ```bash
    sudo nano /etc/nginx/nginx.conf
@@ -104,3 +104,13 @@ Este tutorial te guiará paso a paso para desplegar una página web utilizando u
    ```
 
 6. Abre tu navegador y entra a la IP pública de tu instancia. Si todo está configurado correctamente, verás tu página web publicada.
+
+> [!WARNING]
+> Si en tu proyecto en produccion llegas a tener un problema relacionado con la nula visualizacion de las imagenes de los pokemon dirigete al archivo [environment.prod.ts](https://github.com/Korintios/pokedex/blob/main/src/environments/environment.prod.ts) y cambia el atributo **imagesPath** por:
+
+```bash
+{
+  imagesPath: '/assets/images'
+}
+```
+
