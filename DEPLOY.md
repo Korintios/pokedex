@@ -9,30 +9,32 @@ Este tutorial te guiará paso a paso para desplegar una página web utilizando u
 3. Haz clic en **"Launch Instance"** para iniciar el proceso de creación.
 4. Configura los siguientes parámetros:
    - **Nombre de la instancia**: Asigna un nombre descriptivo.
-   - **Imagen del sistema operativo (AMI)**: Elige **Amazon Linux 2** o **Ubuntu Server** (se recomienda Ubuntu para este tutorial).
-   - **Tipo de instancia**: Selecciona **t2.micro** (incluida en el nivel gratuito).
+   - **Imagen del sistema operativo (AMI)**: Elige **Amazon Linux 2**.
+   - **Tipo de instancia**: Selecciona **t2.micro**.
    - **Par de claves (Key Pair)**: Crea una nueva o selecciona una existente para poder acceder por SSH.
    - **Reglas de seguridad (Security Group)**:
      - Asegúrate de permitir el tráfico **HTTP (puerto 80)**.
      - Permite el tráfico **SSH (puerto 22)** desde tu IP para conectarte de forma segura.
 5. Haz clic en **"Launch Instance"** y espera a que se inicie.
 
-Una vez que tu instancia esté corriendo, toma nota de la **dirección IP pública**, ya que la necesitarás más adelante.
+¡Claro! Aquí tienes una versión más completa del paso a paso, incluyendo la configuración de un proyecto Angular, cómo servirlo con NGINX, y cómo configurar headers como `Cache-Control`, `Content-Security-Policy`, etc.
 
 ---
 
 ### 2. Configurar NGINX
 
-1. Conéctate a tu instancia vía SSH:
+1. **Conéctate a tu instancia vía SSH:**
    ```bash
    ssh -i ruta/a/tu/llave.pem ubuntu@<IP-de-tu-instancia>
    ```
-2. Actualiza el sistema e instala NGINX:
+
+2. **Actualiza el sistema e instala NGINX:**
    ```bash
    sudo apt update
    sudo apt install nginx -y
    ```
-3. Verifica que NGINX esté corriendo:
+
+3. **Verifica que NGINX esté corriendo:**
    ```bash
    systemctl status nginx
    ```
@@ -41,7 +43,65 @@ Una vez que tu instancia esté corriendo, toma nota de la **dirección IP públi
    sudo systemctl start nginx
    ```
 
-4. Ahora deberías poder acceder a la IP pública de tu instancia desde tu navegador y ver la página de bienvenida de NGINX.
+4. **Accede a la IP pública de tu instancia** desde tu navegador. Deberías ver la página de bienvenida de NGINX.
+
+---
+
+### 3. Servir una aplicación Angular con NGINX
+
+1. **Construye tu proyecto Angular:**
+   Asegúrate de estar en la raíz del proyecto Angular y ejecuta:
+   ```bash
+   npm run build
+   ```
+   Esto genera una carpeta `dist/` con los archivos listos para producción.
+
+2. **Copia los archivos al servidor:**
+   Puedes usar `scp` para copiar el contenido de `dist/` a tu servidor (en mi caso yo los movi mediante git clone):
+   ```bash
+   scp -i ruta/a/tu/llave.pem -r dist/tu-app/ ubuntu@<IP-de-tu-instancia>:/home/ubuntu/
+   ```
+
+3. **Mover los archivos a la carpeta de NGINX:**
+   ```bash
+   sudo mv /home/<user>/tu-app /var/www/tu-app
+   ```
+
+4. **Configura un nuevo sitio en NGINX:**
+   Modifica el archivo de configuración en el atributo **server**:
+   ```bash
+   sudo nano /etc/nginx/nginx.conf
+   ```
+
+   Y veras la siguiente estructura:
+
+   ```nginx
+   server {
+        listen  
+        listen       [::]:80;
+        server_name  _;
+        root         /var/www/pokedex-angular;
+        index        index.html
+
+        error_page 404 /404.html;
+        location = /404.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'un$        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+   }
+   ```
+
+5. **Reinicia NGINX:**
+   ```bash
+   sudo systemctl reload nginx
+   ```
 
 ---
 
